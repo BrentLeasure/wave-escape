@@ -17,6 +17,11 @@ $.ajax({
   }
 });
 
+var start = Date.now();
+var current = 0;
+var timer = 10;
+var clock;
+
 var Map = exports.Map = function(url) {
 
    // you can optionall pass a rectangle specification
@@ -84,6 +89,11 @@ function main() {
       }
    }
   }
+   var map = new Map('./data/map.tmx');
+   var color;
+
+   var GameState = 'menu';
+
    var player_vars = {
       'direction': '',
       'width': 50,
@@ -103,7 +113,7 @@ function main() {
    var mBlackHole = new pixelcollision.Mask(blackHole);
    var mPlayer = new pixelcollision.Mask(player);
 
-   var newBlackHolePosition = [100, 100]; 
+   var newBlackHolePosition = [100, 100];
    var blackHolePosition = [20, 20];
    var playerPosition = [1, 1];
 
@@ -125,6 +135,16 @@ function main() {
     }
     if (GameState.pause) { return; }
     if ( Timer() < 0 ) { return; }
+      if (GameState == 'menu') {
+        if (event = gamejs.event.K_SPACE)
+        {
+          GameState = 'play';
+        }
+        else { return; }
+      }
+
+      if (GameState.pause) { return; }
+
       if (event.key  == 49 || event.key == 50 || event.key == 51) {
        switch (event.key) {
          case 49:
@@ -190,6 +210,8 @@ function main() {
 
    gamejs.onTick(function() {
     if (GameState == 'menu') {
+     console.log(GameState);
+      if (GameState == 'menu') {
         var titleFont = new gamejs.font.Font("30px sans-serif");
         var textFont = new gamejs.font.Font("26px sans-serif");
         // render() returns a white transparent Surface containing the text (default color: black)
@@ -205,11 +227,14 @@ function main() {
       if (GameState == 'pause') { return; }
 
       //timer();
+      if ( Timer() < 0 ) {
+        return; 
+      }
       // draw
       if (Math.abs(newBlackHolePosition[0] - blackHolePosition[0]) < 10 && Math.abs(newBlackHolePosition[1] - blackHolePosition[1]) < 10){
          newBlackHolePosition = Array(Math.random() * ((window.innerWidth - blackhole_vars.width) - 1) + 1, Math.random() * ((window.innerHeight - blackhole_vars.height) - 1) + 1);
       }else{
-         var x_displace = (blackHolePosition[0] - newBlackHolePosition[0] > 0) ? true: false; 
+         var x_displace = (blackHolePosition[0] - newBlackHolePosition[0] > 0) ? true: false;
          var y_displace = (blackHolePosition[1] - newBlackHolePosition[1] > 0) ? true: false;
          //blackHolePosition = $v.add(blackHolePosition, delta);
          if (x_displace == true){
@@ -227,7 +252,7 @@ function main() {
       map.draw(display);
       display.blit(blackHole, blackHolePosition);
       display.blit(player, playerPosition);
-      
+
       switch (player_vars.wavetype){
         case "red":
          player = gamejs.image.load('./player.png');
@@ -249,6 +274,18 @@ function main() {
          display.blit(font.render('COLLISION', '#ff0000'), [250, 50]);
       }
    });
+
+  function Timer () {
+    if( Math.floor( (Date.now() - start) / 1000) == current + 1 ) {
+      current = Math.floor( ( Date.now() - start) / 1000);
+      clock = Math.floor( timer/60 )  + " : " + ( timer % 60 == 0 ? "00" : timer % 60 );
+      // document.getElementById( 'timer' ).innerHTML = clock;
+      timer --;
+    } 
+      return timer;
+
+  }
+
 };
 
 gamejs.preload([
