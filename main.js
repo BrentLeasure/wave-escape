@@ -101,6 +101,7 @@ function main() {
    });*/
 
    gamejs.onTick(function() {
+      Timer();
       // draw
       if (Math.abs(newBlackHolePosition[0] - blackHolePosition[0]) < 10 && Math.abs(newBlackHolePosition[1] - blackHolePosition[1]) < 10){
          newBlackHolePosition = Array(Math.random() * ((window.innerWidth - blackhole_vars.width) - 1) + 1, Math.random() * ((window.innerHeight - blackhole_vars.height) - 1) + 1);
@@ -145,6 +146,15 @@ function main() {
          display.blit(font.render('COLLISION', '#ff0000'), [250, 50]);
       }
    });
+
+  function timer () {
+    if ( timer == 'undefined' ) {
+      var timer = Date.now() * 1000;
+    } else {
+      timer = timer - Date.now() * 1000;
+    }
+  }
+
 };
 
 gamejs.preload([
