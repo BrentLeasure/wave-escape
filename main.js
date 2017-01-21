@@ -149,7 +149,7 @@ function main() {
 
 gamejs.preload([
    './blackhole.png',
-   './data/bg2.jpg',
+   './data/map.png',
    './player.png',
    './player2.png',
    './player3.png',
