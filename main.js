@@ -1,4 +1,5 @@
 var gamejs = require('gamejs');
+var draw = require('gamejs/graphics');
 var pixelcollision = require('gamejs/pixelcollision');
 var tiledmap = require('gamejs/tiledmap');
 var $v = require('gamejs/math/vectors');
@@ -26,7 +27,8 @@ function main() {
    var player_vars = {
       'direction': '',
       'width': 50,
-      'height': 50
+      'height': 50,
+      'wavetype': ''
    }
    var display = gamejs.display.getSurface();
    //var unit = gamejs.image.load('./unit.png');
@@ -50,26 +52,44 @@ function main() {
 
    });
    gamejs.event.onKeyDown(function(event) {
-      var delta = direction[event.key];
-      if (delta) {
-         /* playerPositioin is an array of x and y coordination  for the players position, such as Array[x,y] */
-         if (playerPosition[0] > 0 && playerPosition[0] + player_vars.width < window.innerWidth && playerPosition[1] > 0 && playerPosition[1] + player_vars.height < window.innerHeight){
-            playerPosition = $v.add(playerPosition, delta);
-         }else{
-            if (playerPosition[0] < 0){
-               playerPosition[0] = playerPosition[0] + 5;
-            }else if (playerPosition[0] + player_vars.width > window.innerWidth){
-               playerPosition[0] = player_vars.width - 10;
-            }else if (playerPosition[1] < 0){
-               playerPosition[1] = playerPosition[1] + 10;
-            }else if (playerPosition[1] + player_vars.height > window.innerHeight){
-               playerPosition[1] = window.innerHeight - player_vars.height - 5;
-            }else{
-               console.log(playerPosition);
-               //playerPosition = [5,5];
-            }
-         }
-      }
+     if (event.key  == 49 || event.key == 50 || event.key == 51) {
+       switch (event.key) {
+         case 49:
+           player_vars.wavetype = "red";
+           break;
+         case 50:
+           player_vars.wavetype = "blue";
+           break;
+         case 51:
+           player_vars.wavetype = "yellow";
+           break;
+         default:
+       }
+       console.log("Changed wave to " + player_vars.wavetype);
+     }
+     else {
+       var delta = direction[event.key];
+       if (delta) {
+          /* playerPositioin is an array of x and y coordination  for the players position, such as Array[x,y] */
+          if (playerPosition[0] > 0 && playerPosition[0] + player_vars.width < window.innerWidth && playerPosition[1] > 0 && playerPosition[1] + player_vars.height < window.innerHeight){
+             playerPosition = $v.add(playerPosition, delta);
+          }else{
+             if (playerPosition[0] < 0){
+                playerPosition[0] = playerPosition[0] + 5;
+             }else if (playerPosition[0] + player_vars.width > window.innerWidth){
+                playerPosition[0] = player_vars.width - 10;
+             }else if (playerPosition[1] < 0){
+                playerPosition[1] = playerPosition[1] + 10;
+             }else if (playerPosition[1] + player_vars.height > window.innerHeight){
+                playerPosition[1] = window.innerHeight - player_vars.height - 5;
+             }else{
+                console.log(playerPosition);
+                //playerPosition = [5,5];
+             }
+          }
+       }
+     }
+
    })
 
    /*gamejs.event.onMouseMotion(function(event) {
@@ -84,6 +104,21 @@ function main() {
      // display.blit(unit, unitPosition);
       map.draw(display);
       display.blit(player, playerPosition);
+
+      var color;
+      switch (player_vars.wavetype){
+        case "red":
+         color = "rgb(255, 0, 0)";
+         break;
+        case "blue":
+        color = "rgb(0, 132, 255)";
+          break;
+        case "yellow":
+        color = "rgb(242, 255, 0)";
+          break;
+      }
+        draw.circle(display, color, playerPosition, 10, 0);
+
       // collision
       // the relative offset is automatically calculated by
       // the higher-level gamejs.sprite.collideMask(spriteA, spriteB)
