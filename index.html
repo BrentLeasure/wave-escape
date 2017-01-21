@@ -27,6 +27,16 @@
             height: 100%;
             padding: 10% 0% 0% 30%;
         }
+        #gameTimer {
+          position: absolute;
+          top: 13px;
+          right: 14px;
+          font-size: 63px;
+          z-index: 100;
+          font-weight: bold;
+          text-shadow: 1px 1px 0 #fff;
+          color: #B336D2;
+        }
     </style>
     <script src="./gamejs-2.0.1.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -37,6 +47,7 @@
 </head>
 <body>
     <div>
+        <div id="gameTimer"></div>
         <div id="gjs-loader">
          <progress max=1 min=0 steps=0.1></progress>
          <br/>Loading...

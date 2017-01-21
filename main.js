@@ -209,7 +209,6 @@ function main() {
    });*/
 
    gamejs.onTick(function() {
-     console.log(GameState);
       if (GameState == 'menu') {
         var titleFont = new gamejs.font.Font("30px sans-serif");
         var textFont = new gamejs.font.Font("26px sans-serif");
@@ -277,8 +276,8 @@ function main() {
   function Timer () {
     if( Math.floor( (Date.now() - start) / 1000) == current + 1 ) {
       current = Math.floor( ( Date.now() - start) / 1000);
-      clock = Math.floor( timer/60 )  + " : " + ( timer % 60 == 0 ? "00" : timer % 60 );
-      // document.getElementById( 'timer' ).innerHTML = clock;
+      clock = Math.floor( timer/60 )  + " : " + ( timer % 60 < 10 ? "0" + timer % 60 : timer % 60 );
+      document.getElementById( 'gameTimer' ).innerHTML = clock;
       timer --;
     }
       return timer;
