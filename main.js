@@ -4,6 +4,11 @@ var pixelcollision = require('gamejs/pixelcollision');
 var tiledmap = require('gamejs/tiledmap');
 var $v = require('gamejs/math/vectors');
 
+var start = Date.now();
+var current = 0;
+var timer = 10;
+var clock;
+
 var Map = exports.Map = function(url) {
 
    // you can optionall pass a rectangle specification
@@ -129,7 +134,9 @@ function main() {
 
       if (GameState == 'pause') { return; }
 
-      timer();
+      if ( Timer() < 0 ) {
+        return; 
+      }
       // draw
       if (Math.abs(newBlackHolePosition[0] - blackHolePosition[0]) < 10 && Math.abs(newBlackHolePosition[1] - blackHolePosition[1]) < 10){
          newBlackHolePosition = Array(Math.random() * ((window.innerWidth - blackhole_vars.width) - 1) + 1, Math.random() * ((window.innerHeight - blackhole_vars.height) - 1) + 1);
@@ -175,12 +182,15 @@ function main() {
       }
    });
 
-  function timer () {
-    if ( timer == 'undefined' ) {
-      var timer = Date.now() * 1000;
-    } else {
-      timer = timer - Date.now() * 1000;
-    }
+  function Timer () {
+    if( Math.floor( (Date.now() - start) / 1000) == current + 1 ) {
+      current = Math.floor( ( Date.now() - start) / 1000);
+      clock = Math.floor( timer/60 )  + " : " + ( timer % 60 == 0 ? "00" : timer % 60 );
+      // document.getElementById( 'timer' ).innerHTML = clock;
+      timer --;
+    } 
+      return timer;
+
   }
 
 };
