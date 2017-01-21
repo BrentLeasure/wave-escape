@@ -30,6 +30,7 @@ function main() {
       'width': 50,
       'height': 50,
       'wavetype': ''
+
    }
    var blackhole_vars = {
       'width': 50,
@@ -59,7 +60,11 @@ function main() {
    });
 
    gamejs.event.onKeyDown(function(event) {
-      if (event.key  == 49 || event.key == 50 || event.key == 51) {
+
+     if (event.key  == 49 || event.key == 50 || event.key == 51) {
+
+     if (event.key  == 49 || event.key == 50 || event.key == 51) {
+
        switch (event.key) {
          case 49:
            player_vars.wavetype = "red";
@@ -72,6 +77,7 @@ function main() {
            break;
          default:
        }
+
       }
       var delta = direction[event.key];
       if (delta) {
@@ -92,6 +98,33 @@ function main() {
             }
          }
       }
+
+       console.log("Changed wave to " + player_vars.wavetype);
+     }
+     else {
+       var delta = direction[event.key];
+       if (delta) {
+          /* playerPositioin is an array of x and y coordination  for the players position, such as Array[x,y] */
+          if (playerPosition[0] > 0 && playerPosition[0] + player_vars.width < window.innerWidth && playerPosition[1] > 0 && playerPosition[1] + player_vars.height < window.innerHeight){
+             playerPosition = $v.add(playerPosition, delta);
+          }else{
+             if (playerPosition[0] < 0){
+                playerPosition[0] = playerPosition[0] + 5;
+             }else if (playerPosition[0] + player_vars.width > window.innerWidth){
+                playerPosition[0] = player_vars.width - 10;
+             }else if (playerPosition[1] < 0){
+                playerPosition[1] = playerPosition[1] + 10;
+             }else if (playerPosition[1] + player_vars.height > window.innerHeight){
+                playerPosition[1] = window.innerHeight - player_vars.height - 5;
+             }else{
+                console.log(playerPosition);
+                //playerPosition = [5,5];
+             }
+          }
+       }
+     }
+
+
    })
 
    /*gamejs.event.onMouseMotion(function(event) {
@@ -123,7 +156,9 @@ function main() {
       map.draw(display);
       display.blit(blackHole, blackHolePosition);
       display.blit(player, playerPosition);
-      
+
+      var color;
+
       switch (player_vars.wavetype){
         case "red":
          color = "rgb(255, 0, 0)";
@@ -135,7 +170,9 @@ function main() {
         color = "rgb(242, 255, 0)";
           break;
       }
+
       draw.circle(display, color, playerPosition, 10, 0);
+
       // collision
       // the relative offset is automatically calculated by
       // the higher-level gamejs.sprite.collideMask(spriteA, spriteB)
