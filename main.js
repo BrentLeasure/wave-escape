@@ -66,7 +66,7 @@ function Timer () {
       // document.getElementById( 'timer' ).innerHTML = clock;
     }
       timer --;
-    } 
+    }
       return timer;
 }
 function main() {
@@ -209,7 +209,6 @@ function main() {
    });*/
 
    gamejs.onTick(function() {
-    if (GameState == 'menu') {
      console.log(GameState);
       if (GameState == 'menu') {
         var titleFont = new gamejs.font.Font("30px sans-serif");
@@ -228,7 +227,7 @@ function main() {
 
       //timer();
       if ( Timer() < 0 ) {
-        return; 
+        return;
       }
       // draw
       if (Math.abs(newBlackHolePosition[0] - blackHolePosition[0]) < 10 && Math.abs(newBlackHolePosition[1] - blackHolePosition[1]) < 10){
@@ -281,7 +280,7 @@ function main() {
       clock = Math.floor( timer/60 )  + " : " + ( timer % 60 == 0 ? "00" : timer % 60 );
       // document.getElementById( 'timer' ).innerHTML = clock;
       timer --;
-    } 
+    }
       return timer;
 
   }
