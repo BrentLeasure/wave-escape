@@ -1,6 +1,6 @@
 /*
-In case I wake up super late...quick synopsis. 
--Map art and blackhole art has been updated. Map itself has been updated. 
+In case I wake up super late...quick synopsis.
+-Map art and blackhole art has been updated. Map itself has been updated.
 -2 more colors added to the game functionality
 -animated black hole spinning and started writing in animation for player char too, attempted doing it the "right way" first to no avail
 -made background music and added file to data but didn't integrate yet.
@@ -11,6 +11,7 @@ In case I wake up super late...quick synopsis.
 var gamejs = require('gamejs');
 var draw = require('gamejs/graphics');
 var font = require('gamejs/font');
+var audio = require('gamejs/audio');
 var pixelcollision = require('gamejs/pixelcollision');
 var tiledmap = require('gamejs/tiledmap');
 var animate = require('gamejs/animate');
@@ -31,9 +32,9 @@ $.ajax({
       map_json = data;
   }
 });
-var start = Date.now();   
-var current = 0;    
-var timer = 10;   
+var start = Date.now();
+var current = 0;
+var timer = 10;
 var clock;
 
 var Map = exports.Map = function(url) {
@@ -139,11 +140,14 @@ function main() {
    var mBlackHole = new pixelcollision.Mask(blackHole);
    var mPlayer = new pixelcollision.Mask(player);
 
-   var newBlackHolePosition = [100, 100]; 
+   var newBlackHolePosition = [100, 100];
    var blackHolePosition = [300, 300];
    var playerPosition = [1, 1];
 
    var font = new gamejs.font.Font('20px monospace');
+
+   var bgm = audio.Sound('./data/music.ogg');
+   bgm.play(true);
 
    var direction = {};
    direction[gamejs.event.K_UP] = [0, -10];
@@ -246,7 +250,7 @@ function main() {
       if (Math.abs(newBlackHolePosition[0] - blackHolePosition[0]) < 10 && Math.abs(newBlackHolePosition[1] - blackHolePosition[1]) < 10){
          newBlackHolePosition = Array(Math.random() * ((window.innerWidth - blackhole_vars.width) - 1) + 1, Math.random() * ((window.innerHeight - blackhole_vars.height) - 1) + 1);
       }else{
-         var x_displace = (blackHolePosition[0] - newBlackHolePosition[0] > 0) ? true: false; 
+         var x_displace = (blackHolePosition[0] - newBlackHolePosition[0] > 0) ? true: false;
          var y_displace = (blackHolePosition[1] - newBlackHolePosition[1] > 0) ? true: false;
          //blackHolePosition = $v.add(blackHolePosition, delta);
          if (x_displace == true){
@@ -338,5 +342,6 @@ gamejs.preload([
    './player3.png',
    './player4.png',
    './player5.png',
+   './data/music.ogg',
 ]);
 gamejs.ready(main);
