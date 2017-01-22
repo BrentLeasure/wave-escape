@@ -35,6 +35,22 @@
          "tileheight":50,
          "tileproperties":
             {
+            "4":
+                {
+                 "color":"yellow"
+                },
+            "5":
+                {
+                  "block":"true"
+                },
+             "6":
+                {
+                 "block":"true"
+                },
+             "7":
+                {
+                 "block":"true"
+                },
              "10":
                 {
                  "block":"true"
@@ -47,29 +63,37 @@
                 {
                  "block":"true"
                 },
-             "23":
+             "26":
                 {
-                 "color":"green"
+                "color":"red"
                 },
-             "28":
+             "29":
                 {
-                 "color":"green"
-                },
-             "3":
-                {
-                 "color":"yellow"
+                "color":"green"
                 },
              "30":
                 {
-                 "color":"blue"
+                "color":"blue"
+                },
+             "31":
+                {
+                "color":"blue"
                 },
              "32":
                 {
                  "color":"yellow"
                 },
+             "33":
+                {
+                "color":"yellow"
+                },
              "35":
                 {
                  "color":"red"
+                },
+             "36":
+                {
+                "color":"red"
                 },
              "38":
                 {
@@ -83,6 +107,10 @@
                 {
                  "color":"blue"
                 },
+             "41":
+                {
+                "color":"blue"
+                },
              "42":
                 {
                  "block":"true"
@@ -91,17 +119,9 @@
                 {
                  "color":"orange"
                 },
-             "5":
+             "44":
                 {
-                 "block":"true"
-                },
-             "6":
-                {
-                 "block":"true"
-                },
-             "7":
-                {
-                 "block":"true"
+                 "color":"orange"
                 }
             },
          "tilewidth":50,
