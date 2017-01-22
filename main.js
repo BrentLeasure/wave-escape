@@ -162,7 +162,16 @@ function main() {
       if (event = gamejs.event.K_SPACE){
           GameState = 'play';
       }else { return; }
-    }
+    } else if ( GameState == "game over") {
+          timer = 300;
+          GameState = "play";
+          console.log(restartGame);
+          console.log(timer);
+          document.getElementById('map').style.display = 'block';
+          document.getElementById('end-game-box').style.display = 'none';
+          document.getElementById('success-box').style.display = 'none';
+          GameState = 'play';
+      }
     if (GameState.pause) { return; }
     if ( Timer() < 0 ) { return; }
       if (event.key  == 49 || event.key == 50 || event.key == 51 || event.key == 52 || event.key == 53) {
@@ -184,7 +193,7 @@ function main() {
           break;
          default:
        }
-      }
+      } 
       var delta = direction[event.key];
       if (delta) {
          /* playerPositioin is an array of x and y coordination  for the players position, such as Array[x,y] */
@@ -315,14 +324,18 @@ function main() {
       */
    });
   function Timer () {
-    if( Math.floor( (Date.now() - start) / 1000) == current + 1 ) {
-      current = Math.floor( ( Date.now() - start) / 1000);
-      clock = Math.floor( timer/60 )  + " : " + ( timer % 60 < 10 ? "0" + timer % 60 : timer % 60 );
-      document.getElementById( 'gameTimer' ).innerHTML = clock;
-      timer --;
+    if( timer > -1 ) {
+      if( Math.floor( (Date.now() - start) / 1000) == current + 1 ) {
+        current = Math.floor( ( Date.now() - start) / 1000);
+        clock = Math.floor( timer/60 )  + " : " + ( timer % 60 < 10 ? "0" + timer % 60 : timer % 60 );
+        document.getElementById( 'gameTimer' ).innerHTML = clock;
+        
+          timer--;
+      }
+      return false;
+    } else {
+      return true;
     }
-      return timer;
-
   }
 };
 
