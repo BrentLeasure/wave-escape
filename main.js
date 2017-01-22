@@ -11,7 +11,7 @@ var audio = require('gamejs/audio');
 var start = Date.now();
 var current = 0;
 var clock;
-var timer = 100;
+var timer = 60;
 var last_player_frame = Date.now();
 var last_frame = Date.now();
 var prev_frame = 0;
@@ -64,32 +64,13 @@ function check_wall(playerPosition, wall, wavelength, properties_ary, event_key)
   }else{
     var tile_id = (wall.y * 30) + wall.x;
   }
-  //for (var k = 0; k < map_json.layers[0].data.length; k++){
-    if (properties_ary.block[map_json.layers[0].data[tile_id]]){
-      /*console.log(playerPosition);
-      switch (event_key){
-        case 37:
-        //left
-        break;
-        case 38:
-         //up
-        break;
-        break 39:
-          //right.
-        break;
-        case 40:
-          //you're pressing down
-        break;
-      }*/
+  if (properties_ary.block[map_json.layers[0].data[tile_id]]){
+    return true;
+  }else if (properties_ary.color[map_json.layers[0].data[tile_id]]){
+    if (properties_ary.color[map_json.layers[0].data[tile_id]] !== wavelength){
       return true;
-    }else if (properties_ary.color[map_json.layers[0].data[tile_id]]){
-      if (properties_ary.color[map_json.layers[0].data[tile_id]] !== wavelength){
-        console.log(tile_id);
-        console.log('color tile');
-        return true;
-      }
     }
-  //}
+  }
   return false;
 }
 function animateImage(){
@@ -143,7 +124,7 @@ function main() {
       'wavetype': 'red'
    }
    var blackhole_vars = {
-      'speed': 2,
+      'speed': 5,
       'width': 150,
       'height': 150
    }
@@ -205,7 +186,7 @@ function main() {
       } else if ( GameState == "game over") {
         playerPosition = [1,1];
         GameState = 'play';
-        timer = 100;
+        timer = 60;
         start = Date.now();
         current = 0;
         document.getElementById('map').style.display = 'block';
@@ -255,8 +236,6 @@ function main() {
                 wall.y = Math.round((playerPosition[1] + 10)/50);
               break;
             }
-            console.log('playerx ' + playerPosition[0] + ' player_tile ' + playerPosition[0]/50 + ' wall x ' + wall.x); //71, 1.42, 2
-            console.log('playery ' + playerPosition[1] + ' player_tile ' + playerPosition[1]/50 + ' wall x ' + wall.y); //71, 1.42, 2
 
             var blocked = check_wall(playerPosition, wall, player_vars.wavetype, properties_ary, event.key);
             if (blocked == false){
@@ -320,14 +299,14 @@ function main() {
          var y_displace = (blackHolePosition[1] - newBlackHolePosition[1] > 0) ? true: false;
          //blackHolePosition = $v.add(blackHolePosition, delta);
          if (x_displace == true){
-            blackHolePosition[0] = blackHolePosition[0] - 2;
+            blackHolePosition[0] = blackHolePosition[0] - blackhole_vars.speed;
          }else{
-            blackHolePosition[0] = blackHolePosition[0] + 2;
+            blackHolePosition[0] = blackHolePosition[0] + blackhole_vars.speed;
          }
          if (y_displace == true){
-            blackHolePosition[1] = blackHolePosition[1] - 2;
+            blackHolePosition[1] = blackHolePosition[1] - blackhole_vars.speed;
          }else{
-            blackHolePosition[1] = blackHolePosition[1] + 2;
+            blackHolePosition[1] = blackHolePosition[1] + blackhole_vars.speed;
          }
       }
       display.clear();
@@ -426,6 +405,7 @@ gamejs.preload([
    './blackhole6.png',
    './instructions.png',
    './data/map.png',
+   './success.png',
    './player.png',
    './player2.png',
    './player3.png',
