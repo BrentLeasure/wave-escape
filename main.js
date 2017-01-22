@@ -148,26 +148,20 @@ function main() {
    });
 
    gamejs.event.onKeyDown(function(event) {
-
     if (event.key  == 32){
       if (GameState == 'menu') {
             GameState = 'play';
       } else if ( GameState == "game over") {
         playerPosition = [1,1];
-        if (timer == -1){
-          document.getElementById('success-box').style.display = 'none';
-        }else{
-          document.getElementById('fail-box').style.display = 'none';
-        }
-        timer = 300;
-        GameState = "play";
+        GameState = 'play';
+        timer = 10;
+        start = Date.now();
+        current = 0;
         document.getElementById('map').style.display = 'block';
         document.getElementById('end-game-box').style.display = 'none';
-      
       } 
     }
      if (GameState == 'pause') { return; }   
-
       if (event.key  == 49 || event.key == 50 || event.key == 51 || event.key == 52 || event.key == 53) {
        switch (event.key) {
          case 49:
@@ -237,25 +231,15 @@ function main() {
 
    gamejs.onTick(function() {
     if (GameState == 'menu') {
-        /*var titleFont = new gamejs.font.Font("30px Arial");
-        var textFont = new gamejs.font.Font("26px Arial");
-        var defaultFont = new gamejs.font.Font("20px Verdana");
-        // render() returns a white transparent Surface containing the text (default color: black)
-        // render() returns a white transparent Surface containing the text (default color: black)
-        var textSurfaceTitle = titleFont.render("Wave Escape", "#000000");
-        var textSurfaceInstructions = textFont.render("Instructions Here", "#000000");
-        var textSurfacePrompt = defaultFont.render("Press SPACE to begin", "#000000");
-        display.blit(textSurfaceTitle, [350, 50]);
-        display.blit(textSurfaceInstructions, [350, 100]);
-        display.blit(textSurfacePrompt, [350, 150]);*/
         display.blit(instructions, [window.innerWidth/2 - 375, window.innerHeight/2 -300]);
         return;
       }
       if (GameState == 'pause') { return; }
-
-      if (Timer() == true){
-        Success();
-        return;
+      if (GameState !== 'game over' && GameState !== 'pause'){
+        if (Timer() == true){
+          GameState = 'game over';
+          Success();
+        }
       }
      
       // draw
@@ -343,7 +327,6 @@ function main() {
     }
   }
   function Success () { 
-    GameState = 'game over';
     document.getElementById('map').style.display = 'none';
     document.getElementById('end-game-box').style.display = 'flex';
     document.getElementById('success-box').style.display = 'block';
