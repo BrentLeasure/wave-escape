@@ -37,6 +37,26 @@
           text-shadow: 1px 1px 0 #fff;
           color: #B336D2;
         }
+
+        #end-game-box {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #game-over-box { display: none; }
+
+        #game-over-box p {
+            font-family: sans-serif;
+            font-size: 5em;
+        }
+
+        #success-box{ display: none; }
+
+        #success-box p {
+            font-family: sans-serif;
+            font-size: 5em;
+        }
     </style>
     <script src="./gamejs-2.0.1.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -46,7 +66,7 @@
     </script>
 </head>
 <body>
-    <div>
+        <div id="map">
         <div id="gameTimer"></div>
         <div id="gjs-loader">
          <progress max=1 min=0 steps=0.1></progress>
@@ -56,6 +76,19 @@
         <p class="footer">
             Powered by <a href="http://gamejs.org">GameJs</a>.
         </p>
+    </div>
+    <div id="end-game-box">
+        <div id="game-over-box">
+                <p>Game over</p>
+        </div>
+        <div id="success-box">
+            <p> Success! You avoided the blackhole!</p>
+        </div>
+        
+        <div>
+            <p> Press space bar to replay </p>
+        </div>
+        
     </div>
 </body>
 </html>

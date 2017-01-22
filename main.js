@@ -1,6 +1,8 @@
+
 var gamejs = require('gamejs');
 var draw = require('gamejs/graphics');
 var font = require('gamejs/font');
+var audio = require('gamejs/audio');
 var pixelcollision = require('gamejs/pixelcollision');
 var tiledmap = require('gamejs/tiledmap');
 var animate = require('gamejs/animate');
@@ -126,11 +128,14 @@ function main() {
    var mBlackHole = new pixelcollision.Mask(blackHole);
    var mPlayer = new pixelcollision.Mask(player);
 
-   var newBlackHolePosition = [100, 100]; 
+   var newBlackHolePosition = [100, 100];
    var blackHolePosition = [300, 300];
    var playerPosition = [1, 1];
 
    var font = new gamejs.font.Font('20px monospace');
+   var bgm = audio.Sound('./data/music.ogg');
+   bgm.play(true);
+
    var bgm = audio.Sound('./data/music.ogg');
    bgm.play(true);
 
@@ -143,6 +148,7 @@ function main() {
    });
 
    gamejs.event.onKeyDown(function(event) {
+
     if (event.key  == 32){
       if (GameState == 'menu') {
             GameState = 'play';
@@ -161,6 +167,7 @@ function main() {
       } 
     }
      if (GameState == 'pause') { return; }   
+
       if (event.key  == 49 || event.key == 50 || event.key == 51 || event.key == 52 || event.key == 53) {
        switch (event.key) {
          case 49:
@@ -180,7 +187,7 @@ function main() {
           break;
          default:
        }
-      }
+      } 
       var delta = direction[event.key];
       if (delta) {
          /* playerPositioin is an array of x and y coordination  for the players position, such as Array[x,y] */
@@ -250,11 +257,12 @@ function main() {
         Success();
         return;
       }
+     
       // draw
       if (Math.abs(newBlackHolePosition[0] - blackHolePosition[0]) < 10 && Math.abs(newBlackHolePosition[1] - blackHolePosition[1]) < 10){
          newBlackHolePosition = Array(Math.random() * ((window.innerWidth - blackhole_vars.width) - 1) + 1, Math.random() * ((window.innerHeight - blackhole_vars.height) - 1) + 1);
       }else{
-         var x_displace = (blackHolePosition[0] - newBlackHolePosition[0] > 0) ? true: false; 
+         var x_displace = (blackHolePosition[0] - newBlackHolePosition[0] > 0) ? true: false;
          var y_displace = (blackHolePosition[1] - newBlackHolePosition[1] > 0) ? true: false;
          //blackHolePosition = $v.add(blackHolePosition, delta);
          if (x_displace == true){
@@ -320,6 +328,7 @@ function main() {
       //display.blit(animation.image, blackHolePosition);
       */
    });
+
   function Timer(){
     if( timer > -1 ) {
       if( Math.floor( (Date.now() - start) / 1000) == current + 1 ) {
@@ -345,6 +354,7 @@ function main() {
     document.getElementById('end-game-box').style.display = 'flex';
     document.getElementById('success-box').style.display = 'none';
     document.getElementById('fail-box').style.display = 'block';
+
   }
 };
 
