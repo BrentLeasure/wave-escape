@@ -229,25 +229,19 @@ function main() {
    });*/
 
    gamejs.onTick(function() {
+
     if (GameState == 'menu') {
-        /*var titleFont = new gamejs.font.Font("30px Arial");
-        var textFont = new gamejs.font.Font("26px Arial");
-        var defaultFont = new gamejs.font.Font("20px Verdana");
-        // render() returns a white transparent Surface containing the text (default color: black)
-        // render() returns a white transparent Surface containing the text (default color: black)
-        var textSurfaceTitle = titleFont.render("Wave Escape", "#000000");
-        var textSurfaceInstructions = textFont.render("Instructions Here", "#000000");
-        var textSurfacePrompt = defaultFont.render("Press SPACE to begin", "#000000");
-        display.blit(textSurfaceTitle, [350, 50]);
-        display.blit(textSurfaceInstructions, [350, 100]);
-        display.blit(textSurfacePrompt, [350, 150]);*/
         display.blit(instructions, [window.innerWidth/2 - 375, window.innerHeight/2 -300]);
         return;
       }
 
       if (GameState == 'pause') { return; }
 
-      Timer();
+      //timer();
+      if ( Timer() < 0 ) {
+        return;
+      }
+
       // draw
       if (Math.abs(newBlackHolePosition[0] - blackHolePosition[0]) < 10 && Math.abs(newBlackHolePosition[1] - blackHolePosition[1]) < 10){
          newBlackHolePosition = Array(Math.random() * ((window.innerWidth - blackhole_vars.width) - 1) + 1, Math.random() * ((window.innerHeight - blackhole_vars.height) - 1) + 1);
