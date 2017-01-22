@@ -32,9 +32,7 @@ $.ajax({
       map_json = data;
   }
 });
-var start = Date.now();
-var current = 0;
-var clock;
+
 
 var Map = exports.Map = function(url) {
 
@@ -170,7 +168,6 @@ function main() {
           GameState = 'play';
       }
     if (GameState.pause) { return; }
-    if ( Timer() < 0 ) { return; }
       if (event.key  == 49 || event.key == 50 || event.key == 51 || event.key == 52 || event.key == 53) {
        switch (event.key) {
          case 49:
@@ -249,8 +246,9 @@ function main() {
 
       //timer();
       if ( Timer() < 0 ) {
+        Success();
         return;
-      }
+      } 
 
       // draw
       if (Math.abs(newBlackHolePosition[0] - blackHolePosition[0]) < 10 && Math.abs(newBlackHolePosition[1] - blackHolePosition[1]) < 10){
