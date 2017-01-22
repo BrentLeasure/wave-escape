@@ -1,13 +1,3 @@
-/*
-In case I wake up super late...quick synopsis. 
--Map art and blackhole art has been updated. Map itself has been updated. 
--2 more colors added to the game functionality
--animated black hole spinning and started writing in animation for player char too, attempted doing it the "right way" first to no avail
--made background music and added file to data but didn't integrate yet.
--created and changed over instructions screen
--moved blackhole to new starting position
-*/
-
 var gamejs = require('gamejs');
 var draw = require('gamejs/graphics');
 var font = require('gamejs/font');
@@ -15,10 +5,11 @@ var pixelcollision = require('gamejs/pixelcollision');
 var tiledmap = require('gamejs/tiledmap');
 var animate = require('gamejs/animate');
 var $v = require('gamejs/math/vectors');
+var audio = require('gamejs/audio');
 var start = Date.now();
 var current = 0;
 var clock;
-var timer = 100;
+var timer = 10;
 var last_frame = Date.now();
 var prev_frame = 0;
 var cur_img = {};
@@ -31,10 +22,6 @@ $.ajax({
       map_json = data;
   }
 });
-var start = Date.now();   
-var current = 0;    
-var timer = 10;   
-var clock;
 
 var Map = exports.Map = function(url) {
 
@@ -50,13 +37,13 @@ var Map = exports.Map = function(url) {
   return this;
 };
 var SpriteSheet = exports.SpriteSheet = function(imagePath, sheetSpec) {
-       this.get = function(id) {
-          return surfaceCache[id];
-       };
+  this.get = function(id) {
+    return surfaceCache[id];
+  };
 
-       var width = sheetSpec.width;
-       var height = sheetSpec.height;
-       return this;
+  var width = sheetSpec.width;
+  var height = sheetSpec.height;
+  return this;
 };
 var Animation = exports.Animation = function(spriteSheet, initial, spec) {
   this.get = function(id) {
@@ -130,7 +117,7 @@ function main() {
    var display = gamejs.display.getSurface();
    var blackHoles = Array('./blackhole.png', './blackhole2.png', './blackhole3.png', './blackhole4.png', './blackhole5.png', './blackhole6.png');
    var blackHole = gamejs.image.load('./blackhole0.png');
-   //var player = Array('player', 'player2', 'player3', 'player4', 'player5');
+   //var player_state = Array('player', 'player2', 'player3', 'player4', 'player5');
    //var players = Array(player[x] + '.png', player[x] + '-2.png', player[x] + '-3.png');
    var player = gamejs.image.load('./player.png');
    var instructions = gamejs.image.load('./instructions.png');
@@ -144,6 +131,8 @@ function main() {
    var playerPosition = [1, 1];
 
    var font = new gamejs.font.Font('20px monospace');
+   var bgm = audio.Sound('./data/music.ogg');
+   bgm.play(true);
 
    var direction = {};
    direction[gamejs.event.K_UP] = [0, -10];
@@ -154,13 +143,24 @@ function main() {
    });
 
    gamejs.event.onKeyDown(function(event) {
-    if (GameState == 'menu') {
-      if (event = gamejs.event.K_SPACE){
-          GameState = 'play';
-      }else { return; }
+    if (event.key  == 32){
+      if (GameState == 'menu') {
+            GameState = 'play';
+      } else if ( GameState == "game over") {
+        playerPosition = [1,1];
+        if (timer == -1){
+          document.getElementById('success-box').style.display = 'none';
+        }else{
+          document.getElementById('fail-box').style.display = 'none';
+        }
+        timer = 300;
+        GameState = "play";
+        document.getElementById('map').style.display = 'block';
+        document.getElementById('end-game-box').style.display = 'none';
+      
+      } 
     }
-    if (GameState.pause) { return; }
-    if ( Timer() < 0 ) { return; }
+     if (GameState == 'pause') { return; }   
       if (event.key  == 49 || event.key == 50 || event.key == 51 || event.key == 52 || event.key == 53) {
        switch (event.key) {
          case 49:
@@ -229,19 +229,27 @@ function main() {
    });*/
 
    gamejs.onTick(function() {
-
     if (GameState == 'menu') {
+        /*var titleFont = new gamejs.font.Font("30px Arial");
+        var textFont = new gamejs.font.Font("26px Arial");
+        var defaultFont = new gamejs.font.Font("20px Verdana");
+        // render() returns a white transparent Surface containing the text (default color: black)
+        // render() returns a white transparent Surface containing the text (default color: black)
+        var textSurfaceTitle = titleFont.render("Wave Escape", "#000000");
+        var textSurfaceInstructions = textFont.render("Instructions Here", "#000000");
+        var textSurfacePrompt = defaultFont.render("Press SPACE to begin", "#000000");
+        display.blit(textSurfaceTitle, [350, 50]);
+        display.blit(textSurfaceInstructions, [350, 100]);
+        display.blit(textSurfacePrompt, [350, 150]);*/
         display.blit(instructions, [window.innerWidth/2 - 375, window.innerHeight/2 -300]);
         return;
       }
-
       if (GameState == 'pause') { return; }
 
-      //timer();
-      if ( Timer() < 0 ) {
+      if (Timer() == true){
+        Success();
         return;
       }
-
       // draw
       if (Math.abs(newBlackHolePosition[0] - blackHolePosition[0]) < 10 && Math.abs(newBlackHolePosition[1] - blackHolePosition[1]) < 10){
          newBlackHolePosition = Array(Math.random() * ((window.innerWidth - blackhole_vars.width) - 1) + 1, Math.random() * ((window.innerHeight - blackhole_vars.height) - 1) + 1);
@@ -293,7 +301,9 @@ function main() {
       //console.log(relativeOffset);
       var hasMaskOverlap = mBlackHole.overlap(mBlackHole, relativeOffset);
       if (hasMaskOverlap) {
-         display.blit(font.render('COLLISION', '#ff0000'), [250, 50]);
+        GameState = 'game over';
+        Gameover();
+        display.blit(font.render('COLLISION', '#ff0000'), [250, 50]);
       }
 
       /*var msDuration = 10;
@@ -310,15 +320,31 @@ function main() {
       //display.blit(animation.image, blackHolePosition);
       */
    });
-  function Timer () {
-    if( Math.floor( (Date.now() - start) / 1000) == current + 1 ) {
-      current = Math.floor( ( Date.now() - start) / 1000);
-      clock = Math.floor( timer/60 )  + " : " + ( timer % 60 < 10 ? "0" + timer % 60 : timer % 60 );
-      document.getElementById( 'gameTimer' ).innerHTML = clock;
-      timer --;
+  function Timer(){
+    if( timer > -1 ) {
+      if( Math.floor( (Date.now() - start) / 1000) == current + 1 ) {
+        clock = Math.floor( timer/60 )  + " : " + ( timer % 60 < 10 ? "0" + timer % 60 : timer % 60 );
+        current = Math.floor( ( Date.now() - start) / 1000);
+        document.getElementById('gameTimer').innerHTML = clock;
+        timer --;
+      }
+      return false;
+    } else {
+      return true;
     }
-      return timer;
-
+  }
+  function Success () { 
+    GameState = 'game over';
+    document.getElementById('map').style.display = 'none';
+    document.getElementById('end-game-box').style.display = 'flex';
+    document.getElementById('success-box').style.display = 'block';
+    document.getElementById('fail-box').style.display = 'none';
+  }
+  function Gameover(){
+    document.getElementById('map').style.display = 'none';
+    document.getElementById('end-game-box').style.display = 'flex';
+    document.getElementById('success-box').style.display = 'none';
+    document.getElementById('fail-box').style.display = 'block';
   }
 };
 
@@ -330,7 +356,6 @@ gamejs.preload([
    './blackhole4.png',
    './blackhole5.png',
    './blackhole6.png',
-   './blackhole_spritesheet.png',
    './instructions.png',
    './data/map.png',
    './player.png',
@@ -338,5 +363,6 @@ gamejs.preload([
    './player3.png',
    './player4.png',
    './player5.png',
+   './data/music.ogg',
 ]);
 gamejs.ready(main);
