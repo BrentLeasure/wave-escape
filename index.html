@@ -40,23 +40,47 @@
           width: 300px;
        }
        #end-game-box {
+            animation: fadeIn 1s;
             display: none;
             flex-direction: column;
             align-items: center;
         }
 
-        #game-over-box { display: none; }
+        #game-over-box { 
+          background: black; 
+          display: none; 
+        }
 
         #game-over-box p {
             font-family: sans-serif;
             font-size: 5em;
-        }+
-        #success-box, #fail-box{ display: none; }
+        }
+        #success-box, #fail-box{ 
+          background: black; 
+          display: none; 
+        }
 
         #success-box p, #fail-box p {
             font-family: sans-serif;
             font-size: 5em;
+            color: white;
         }
+
+        #fail-box{
+          text-align: center;
+        }
+
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1}
+} 
+
+/* Standard syntax */ 
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1}
+}
+
     </style>
     <script src="./gamejs-2.0.1.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -85,7 +109,7 @@
             <p> Success! You avoided the blackhole!</p>
         </div>
         <div id="fail-box">
-            <p> Gameover, you were swallowed by the black hole!</p>
+            <p> You were swallowed by the black hole!</p>
         </div>
         
         <div>
