@@ -19,7 +19,7 @@ var $v = require('gamejs/math/vectors');
 var start = Date.now();
 var current = 0;
 var clock;
-var timer = 100;
+var timer = 10;
 var last_frame = Date.now();
 var prev_frame = 0;
 var cur_img = {};
@@ -34,7 +34,6 @@ $.ajax({
 });
 var start = Date.now();
 var current = 0;
-var timer = 10;
 var clock;
 
 var Map = exports.Map = function(url) {
@@ -165,8 +164,6 @@ function main() {
     } else if ( GameState == "game over") {
           timer = 300;
           GameState = "play";
-          console.log(restartGame);
-          console.log(timer);
           document.getElementById('map').style.display = 'block';
           document.getElementById('end-game-box').style.display = 'none';
           document.getElementById('success-box').style.display = 'none';
@@ -336,6 +333,13 @@ function main() {
     } else {
       return true;
     }
+  }
+
+  function Success () { 
+    GameState = "game over";
+    document.getElementById('map').style.display = 'none';
+    document.getElementById('end-game-box').style.display = 'flex';
+    document.getElementById('success-box').style.display = 'block';
   }
 };
 
