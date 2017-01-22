@@ -36,9 +36,10 @@
           font-weight: bold;
           text-shadow: 1px 1px 0 #fff;
           color: #B336D2;
-        }
-
-        #end-game-box {
+          height: 200px;
+          width: 300px;
+       }
+       #end-game-box {
             display: none;
             flex-direction: column;
             align-items: center;
@@ -49,11 +50,10 @@
         #game-over-box p {
             font-family: sans-serif;
             font-size: 5em;
-        }
+        }+
+        #success-box, #fail-box{ display: none; }
 
-        #success-box{ display: none; }
-
-        #success-box p {
+        #success-box p, #fail-box p {
             font-family: sans-serif;
             font-size: 5em;
         }
@@ -66,7 +66,7 @@
     </script>
 </head>
 <body>
-        <div id="map">
+    <div id="map">
         <div id="gameTimer"></div>
         <div id="gjs-loader">
          <progress max=1 min=0 steps=0.1></progress>
@@ -83,6 +83,9 @@
         </div>
         <div id="success-box">
             <p> Success! You avoided the blackhole!</p>
+        </div>
+        <div id="fail-box">
+            <p> Gameover, you were swallowed by the black hole!</p>
         </div>
         
         <div>
