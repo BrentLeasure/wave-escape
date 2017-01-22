@@ -245,7 +245,7 @@ function main() {
       if (GameState == 'pause') { return; }
 
       //timer();
-      if ( Timer() < 0 ) {
+      if ( Timer() == true ) {
         Success();
         return;
       } 
