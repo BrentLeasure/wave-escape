@@ -11,9 +11,11 @@ var audio = require('gamejs/audio');
 var start = Date.now();
 var current = 0;
 var clock;
-var timer = 10;
+var timer = 100;
+var last_player_frame = Date.now();
 var last_frame = Date.now();
 var prev_frame = 0;
+var prev_player_frame = 0;
 var cur_img = {};
 //pull the map JSON
 var map_json = {};
@@ -56,21 +58,38 @@ var Animation = exports.Animation = function(spriteSheet, initial, spec) {
    return this;
 }
 //Function that determines if a wall is passable or not.
-function check_wall(playerPosition, wall, wavelength, properties_ary){
+function check_wall(playerPosition, wall, wavelength, properties_ary, event_key){
   if (wall.y == 0){
     var tile_id = wall.x;
   }else{
     var tile_id = (wall.y * 30) + wall.x;
   }
-  for (var k = 0; k < map_json.layers[0].data.length; k++){
+  //for (var k = 0; k < map_json.layers[0].data.length; k++){
     if (properties_ary.block[map_json.layers[0].data[tile_id]]){
+      /*console.log(playerPosition);
+      switch (event_key){
+        case 37:
+        //left
+        break;
+        case 38:
+         //up
+        break;
+        break 39:
+          //right.
+        break;
+        case 40:
+          //you're pressing down
+        break;
+      }*/
       return true;
     }else if (properties_ary.color[map_json.layers[0].data[tile_id]]){
       if (properties_ary.color[map_json.layers[0].data[tile_id]] !== wavelength){
+        console.log(tile_id);
+        console.log('color tile');
         return true;
       }
     }
-  }
+  //}
   return false;
 }
 function animateImage(){
@@ -80,6 +99,18 @@ function animateImage(){
       prev_frame++;
     }else{
       prev_frame = 0;
+    }
+    return true;
+  }
+  return false;
+}
+function animatePlayer(){
+  if (Date.now() - last_player_frame > 100){
+    last_player_frame = Date.now();
+    if (prev_player_frame < 2){
+      prev_player_frame++;
+    }else{
+      prev_player_frame = 0;
     }
     return true;
   }
@@ -119,9 +150,29 @@ function main() {
    var display = gamejs.display.getSurface();
    var blackHoles = Array('./blackhole.png', './blackhole2.png', './blackhole3.png', './blackhole4.png', './blackhole5.png', './blackhole6.png');
    var blackHole = gamejs.image.load('./blackhole0.png');
-   //var player_state = Array('player', 'player2', 'player3', 'player4', 'player5');
-   //var players = Array(player[x] + '.png', player[x] + '-2.png', player[x] + '-3.png');
-   var player = gamejs.image.load('./player.png');
+   var player_red = Array('./player.png', './player-2.png', './player-3.png');
+   var player_blue = Array('./player2.png', './player2-2.png', './player2-3.png');
+   var player_yellow = Array('./player3.png', './player3-2.png', './player3-3.png');
+   var player_green = Array('./player4.png', './player4-2.png', './player4-3.png');
+   var player_orange = Array('./player5.png', './player5-2.png', './player5-3.png');
+   //var player = gamejs.image.load('./player.png');
+   switch (player_vars.wavetype){
+        case "red":
+          var player = gamejs.image.load(player_red[prev_player_frame]);
+         break;
+        case "blue":
+          var player = gamejs.image.load(player_blue[prev_player_frame]);
+          break;
+        case "yellow":
+          var player = gamejs.image.load(player_yellow[prev_player_frame]);
+        break;
+        case "green":
+          var player = gamejs.image.load(player_green[prev_player_frame]);
+        break;
+        case "orange":
+          var player = gamejs.image.load(player_orange[prev_player_frame]);
+        break;
+      }
    var instructions = gamejs.image.load('./instructions.png');
 
    // create image masks from surface
@@ -154,7 +205,7 @@ function main() {
       } else if ( GameState == "game over") {
         playerPosition = [1,1];
         GameState = 'play';
-        timer = 10;
+        timer = 100;
         start = Date.now();
         current = 0;
         document.getElementById('map').style.display = 'block';
@@ -186,9 +237,28 @@ function main() {
       if (delta) {
          /* playerPositioin is an array of x and y coordination  for the players position, such as Array[x,y] */
          if (playerPosition[0] > 0 && playerPosition[0] + player_vars.width < window.innerWidth - player_vars.width && playerPosition[1] > 0 && playerPosition[1] + player_vars.height < window.innerHeight - player_vars.height){
-            wall.x = Math.round(playerPosition[0]/50);
-            wall.y = Math.round(playerPosition[1]/50);
-            var blocked = check_wall(playerPosition, wall, player_vars.wavetype, properties_ary);
+            switch (event.key){
+              case 37://left
+                wall.x = Math.round((playerPosition[0] - 10)/50);
+                wall.y = Math.round(playerPosition[1]/50);
+              break;
+              case 38://up
+                wall.x = Math.round(playerPosition[0]/50);
+                wall.y = Math.round((playerPosition[1] - 10)/50);
+              break;
+              case 39://right
+                wall.x = Math.round((playerPosition[0] + 10)/50);
+                wall.y = Math.round(playerPosition[1]/50);
+              break;
+              case 40://down
+                wall.x = Math.round(playerPosition[0]/50);
+                wall.y = Math.round((playerPosition[1] + 10)/50);
+              break;
+            }
+            console.log('playerx ' + playerPosition[0] + ' player_tile ' + playerPosition[0]/50 + ' wall x ' + wall.x); //71, 1.42, 2
+            console.log('playery ' + playerPosition[1] + ' player_tile ' + playerPosition[1]/50 + ' wall x ' + wall.y); //71, 1.42, 2
+
+            var blocked = check_wall(playerPosition, wall, player_vars.wavetype, properties_ary, event.key);
             if (blocked == false){
               playerPosition = $v.add(playerPosition, delta);
             }else{
@@ -263,26 +333,32 @@ function main() {
       display.clear();
       map.draw(display);
       animateImage();
+      animatePlayer();
       //var play = gamejs.image.load(player[prev_frame]);
-      display.blit(player, playerPosition);
+
       var bh = gamejs.image.load(blackHoles[prev_frame]);
       display.blit(bh, blackHolePosition);
 
       switch (player_vars.wavetype){
         case "red":
-          player = gamejs.image.load('./player.png');
+          player = gamejs.image.load(player_red[prev_player_frame]);
+          display.blit(player, playerPosition);
          break;
         case "blue":
-          player = gamejs.image.load('./player2.png');
+          player = gamejs.image.load(player_blue[prev_player_frame]);
+          display.blit(player, playerPosition);
           break;
         case "yellow":
-          player = gamejs.image.load('./player3.png');
+          player = gamejs.image.load(player_yellow[prev_player_frame]);
+          display.blit(player, playerPosition);
         break;
         case "green":
-          player = gamejs.image.load('./player4.png');
+          player = gamejs.image.load(player_green[prev_player_frame]);
+          display.blit(player, playerPosition);
         break;
         case "orange":
-          player = gamejs.image.load('./player5.png');
+          player = gamejs.image.load(player_orange[prev_player_frame]);
+          display.blit(player, playerPosition);
         break;
       }
       //draw.circle(display, color, playerPosition, 10, 0);
@@ -337,7 +413,6 @@ function main() {
     document.getElementById('end-game-box').style.display = 'flex';
     document.getElementById('success-box').style.display = 'none';
     document.getElementById('fail-box').style.display = 'block';
-
   }
 };
 
@@ -356,6 +431,16 @@ gamejs.preload([
    './player3.png',
    './player4.png',
    './player5.png',
+   './player-2.png',
+   './player2-2.png',
+   './player3-2.png',
+   './player4-2.png',
+   './player5-2.png',
+   './player-3.png',
+   './player2-3.png',
+   './player3-3.png',
+   './player4-3.png',
+   './player5-3.png',
    './data/music.ogg',
 ]);
 gamejs.ready(main);
